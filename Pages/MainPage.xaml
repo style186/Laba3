@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:LABA3.Pages"
+             xmlns:viewModels="clr-namespace:LABA3.ViewModels"
+             xmlns:models="clr-namespace:LABA3.Models"
+             xmlns:converters="clr-namespace:LABA3.Converters"
+             x:Class="LABA3.Pages.MainPage"
+             x:DataType="viewModels:TodoViewModel">
+
+    <ContentPage.BindingContext>
+        <viewModels:TodoViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BooleanToTextDecorationsConverter x:Key="BooleanToTextDecorationsConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <StackLayout Padding="10">
+        <Label Text="Список задач" FontSize="24" HorizontalOptions="Center" />
+
+        <Entry Placeholder="Введите заголовок задачи" 
+               Text="{Binding NewTodoTitle}" />
+        <Button Text="Добавить задачу" Command="{Binding AddCommand}" />
+
+        <ListView ItemsSource="{Binding TodoItems}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:TodoItem">
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal">
+                            <Switch IsToggled="{Binding IsCompleted}" 
+                                    Toggled="OnToggleToggled" />
+                            <Label Text="{Binding Title}" 
+                                   TextDecorations="{Binding IsCompleted, Converter={StaticResource BooleanToTextDecorationsConverter}}"/>
+                            <Button Text="Удалить" Command="{Binding Source={RelativeSource AncestorType={x:Type ListView}}, Path=BindingContext.RemoveCommand}" CommandParameter="{Binding .}" />
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</ContentPage>
